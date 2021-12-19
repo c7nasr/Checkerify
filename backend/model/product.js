@@ -15,9 +15,18 @@ const ProductsSchema = new Schema(
             type: Boolean,
             default:true
         },
-        usage:Number,
-
-
+        purchases:{
+            type: Number,
+            default:0
+        },
+        ip:{
+            type:Array,
+            default:[{}]
+        },
+        timeline:{
+            type:Array,
+            default:[{}]
+        }
 
     },
     { timestamps: true }
