@@ -2,9 +2,9 @@ const User = require("../../model/user");
 const {GenerateToken} = require("../../libs/middle/auth");
 exports.Register = async (req,res) => {
   try {
-       const {username,email,password} = req.body
+       const {email,password} = req.body
         let register_info = req.ip_info
-      const NewUser = await User.create({username,email,password,register_info})
+      const NewUser = await User.create({username:req.username,email,password,register_info})
 
       if (NewUser){
           const token = await GenerateToken(NewUser._id)

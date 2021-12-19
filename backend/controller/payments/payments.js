@@ -157,9 +157,9 @@ exports.WebHook = async (req, res) => {
             console.log(events.metadata)
             const {id,amount} = events.metadata
             await User.findByIdAndUpdate(id,{$inc:{
-                balance:amount
+                balance:amount,recharges:1
                 }})
-            await Payment.findOneAndUpdate({uuid:events.data.id},{status:"COMPLETED"})
+            await Payment.findOneAndUpdate({uuid:events.data.id},{status:"COMPLETED",timeline:events.data.timeline,payments:events.data.payments},{new:true})
 
         }
         if (events.type === "charge:pending"){
@@ -167,10 +167,13 @@ exports.WebHook = async (req, res) => {
         }
         if (events.type === "charge:failed"){
             console.log(events.data.id)
-            await Payment.findOneAndUpdate({uuid:events.data.id},{status:"FAILED"})
-
             console.log("failed or expired...")
+
+            await Payment.findOneAndUpdate({uuid:events.data.id},{status:events.data.timeline[events.data.timeline.length -1].status,timeline:events.data.timeline},{new:true})
+
+
         }
+        return res.sendStatus(200)
 
     } catch (e) {
         console.log(e)

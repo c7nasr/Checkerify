@@ -2,16 +2,25 @@ const Joi = require('joi');
 const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
 
-const schema = Joi.object({
+const RegisterSchema = Joi.object({
     username: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).trim().required(),
 
     password: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
 
 
     email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required()
+})
+
+const LoginSchema = Joi.object({
+    username: Joi.string()
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).trim().required(),
+
+    password: Joi.string()
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+
 })
 exports.GenerateToken = async (id) => {
     try {
@@ -44,7 +53,7 @@ exports.ValidateToken = async (req,res,next) => {
 exports.CheckRegister = async (req, res, next) => {
     const {username, email, password} = req.body
 
-    const {error} = schema.validate({username, email, password});
+    const {error} = RegisterSchema.validate({username, email, password});
     if (error) {
         return res.json({status: 422, error: "Some inputs isn't valid"})
     } else {
@@ -59,10 +68,11 @@ exports.CheckRegister = async (req, res, next) => {
 exports.CheckLogin = async (req, res, next) => {
     const {username, password} = req.body
 
-    const {error} = schema.validate({username, password});
+    const {error} = LoginSchema.validate({username, password});
     if (error) {
         return res.json({status: 422, error: "Some inputs isn't valid"})
     } else {
+        req.username = username
        next()
 
     }
