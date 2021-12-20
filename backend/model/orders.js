@@ -30,25 +30,22 @@ const OrderSchema = new Schema(
             type: Boolean,
             default: true,
         },
-        uploaded_list:{
-            type: String,
-            default: "",
+        combo:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"Combo"
+
         },
         status:{
             type: String,
-            default: "Waiting PS to send start signal",
-        },
-        count:{
-            type: Number,
-            default: 0,
+            default: "Pending: not started yet",
         },
         left:{
             type: Number,
-            default: 0,
+
         },
         last:{
             type: String,
-            default: "XXXX:XXXX",
+            default: "Not Started yet",
         },
         time_used:{
             type: String,
@@ -73,6 +70,14 @@ const OrderSchema = new Schema(
         ip:{
             type:{},
 
+        },
+        lives:{
+            type: Array,
+            default: [],
+        },
+        deads:{
+            type: Array,
+            default: [],
         }
 
 
