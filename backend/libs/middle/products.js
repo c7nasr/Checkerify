@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
+
 exports.ValidateProductID = (req,res,next) =>{
     const {id} = req.params
     if (!id || !mongoose.Types.ObjectId.isValid(id)){
@@ -6,8 +8,6 @@ exports.ValidateProductID = (req,res,next) =>{
     }
     next()
 }
-const Joi = require("joi");
-const {val} = require("jshint/src/options");
 
 const ProductSchema = Joi.object({
     name: Joi.string().trim(true).required(),
