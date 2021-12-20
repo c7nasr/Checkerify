@@ -1,16 +1,25 @@
 const Product = require("../../model/product");
+const {getProductFilters, listAllProductsFilters} = require("../../libs/middle/products");
 exports.ListAllProducts = async (req,res) => {
 try {
-    const products = await Product.find({}).sort("-createdAt")
-    return res.json({status:200,data:products})
+    const {role} = req
+    const {filter,select} = listAllProductsFilters(role)
+    if (!filter || !select) return res.sendStatus(500)
+    const products = await Product.find(filter).select(select).sort("-createdAt")
+    const count = await  products.length
+    return res.json({status:200,count,data:products})
 }catch (e) {
+    console.log(e)
     return res.sendStatus(500)
 }
 }
 exports.GetProduct = async (req,res) => {
     try {
         const {id} = req.params
-        const product = await Product.findById(id)
+        const {role} = req
+        const {select,filter} = getProductFilters(role,id)
+        if (select === "" || filter === {}) return res.sendStatus(500)
+        const product = await Product.findOne(filter).select(select)
         if (!product) return res.json({status:404,error:"No Product with this ID"})
         return res.json({status:200,data:product})
     }catch (e) {

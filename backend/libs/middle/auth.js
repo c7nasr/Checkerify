@@ -38,10 +38,14 @@ exports.ValidateToken = async (req,res,next) => {
 
         const is_valid = await jwt.verify(token, process.env.JWT_SECRET)
         if (is_valid){
+            const getUser = await User.findOne({_id:is_valid.id})
+            if (!getUser) return res.json({status: 401,error:"Invalid or Expired Token"})
             req.id = is_valid.id
+            req.role = getUser.role
+
             next()
         }else{
-            return res.json({status: 401})
+            return res.json({status: 401,error:"Invalid or Expired Token"})
 
         }
 

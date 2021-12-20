@@ -33,3 +33,48 @@ exports.ValidateProductInputs = (req,res,next) => {
         next()
     }
 }
+exports.getProductFilters = (role,id) => {
+    let filter
+    if (role === "user"){
+        filter = {_id:id,isActive:true}
+
+    }else if (role === "admin"){
+        filter = {_id:id}
+    }else{
+        return {}
+    }
+    let select
+
+    if (role === "user"){
+        select = "-purchases -ip -__v -isActive"
+
+    }else if (role === "admin"){
+        select = "-__v"
+    }else{
+        return ""
+    }
+    return {filter,select}
+}
+
+
+exports.listAllProductsFilters = (role) => {
+    let filter
+    if (role === "user"){
+        filter = {isActive:true}
+    }else if (role === "admin"){
+        filter = {}
+    }else{
+        return false
+    }
+    let select
+
+    if (role === "user"){
+        select = "-purchases -ip -__v -isActive"
+
+    }else if (role === "admin"){
+        select = "-__v"
+    }else{
+        return ""
+    }
+    return {filter,select}
+}
