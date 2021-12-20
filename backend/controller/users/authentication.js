@@ -20,7 +20,7 @@ exports.Register = async (req,res) => {
 exports.Login = async (req,res) => {
     try {
         const {password} = req.body
-        const isExisted = await User.findOne({username:req.username,password})
+        const isExisted = await User.findOne({username:req.username,password}).select("+password")
 
         if (isExisted){
             const token = await GenerateToken(isExisted._id)
@@ -31,7 +31,7 @@ exports.Login = async (req,res) => {
             })
             return res.json({status:200,data:token})
         }else{
-            return res.json({status:404,error:"We can't find your account!"})
+            return res.json({status:404,error:"Account not found"})
         }
 
     }catch (e) {
