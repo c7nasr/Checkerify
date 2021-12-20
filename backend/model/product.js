@@ -23,10 +23,7 @@ const ProductsSchema = new Schema(
             type:Array,
             default:[{}]
         },
-        timeline:{
-            type:Array,
-            default:[{}]
-        }
+
 
     },
     { timestamps: true }

@@ -37,6 +37,10 @@ const PaymentsSchema = new Schema(
         payments:Array,
         pricing:Array,
         payment_link:String,
+        timeline:{
+            type:Array,
+            default:[{}]
+        }
 
     },
     { timestamps: true }
