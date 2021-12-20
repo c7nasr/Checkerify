@@ -4,10 +4,10 @@ const jwt = require("jsonwebtoken");
 
 const RegisterSchema = Joi.object({
     username: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).trim().required(),
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).trim().min(3).max(32).required(),
 
     password: Joi.string()
-        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).min(6).max(32).required(),
 
 
     email: Joi.string()
