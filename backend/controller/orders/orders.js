@@ -1,6 +1,9 @@
 const Order = require("../../model/orders");
 const {ListUserOrdersFilters} = require("../../libs/middle/orders");
 const Combo = require("../../model/combo");
+const Product = require("../../model/product");
+const User = require("../../model/user");
+
 exports.ListAllOrders = async( req,res) => {
     try {
         const orders = await Order.find({}).sort("-createdAt").populate("by").populate("of").populate("combo")
@@ -30,14 +33,14 @@ exports.CreatOrder = async( req,res) => {
 
         const  {of,combo} = req.body
 
-        // check if combo belong to user
         const isYourCombo = await Combo.findOne({by:req.id})
         if (!isYourCombo) return res.json({status:401,error:"Access Denied"})
 
-
-
         const newOrder = await Order.create({by:req.id,of,combo})
-
+        if (newOrder) {
+            await Product.findByIdAndUpdate(of,{$inc:{purchases:1}},{new:true})
+            await  User.findByIdAndUpdate(req.id,{$inc:{orders:1}},{new:true})
+        }
         return res.json({status:200,data:newOrder})
 
     }catch (e) {
@@ -46,6 +49,18 @@ exports.CreatOrder = async( req,res) => {
 }
 exports.GetOrder = async( req,res) => {
     try {
+        const {role,id:user} = req
+
+        const {id} = req.params
+
+        const order = await Order.findById(id)
+        if (!order) return res.json({status: 404, error: "Not Found"})
+        if (role !== "admin" && user !== order.by){
+            return res.json({status:401,error:"Access Denied"})
+        }
+
+        return res.json({status:200,data:order})
+
 
     }catch (e) {
         return res.sendStatus(500)
