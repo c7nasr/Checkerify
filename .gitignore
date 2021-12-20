@@ -75,3 +75,4 @@ typings/
 # FuseBox cache
 .fusebox/
 *.xml
+backend/test-80d25-firebase-adminsdk-2g5kf-ea3a83fb1a.json
