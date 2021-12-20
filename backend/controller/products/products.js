@@ -28,9 +28,16 @@ exports.GetProduct = async (req,res) => {
 }
 exports.AddNewProduct = async (req,res) => {
     try {
-        const {image,charge_per_dead,charge_per_live} = req.body
+        const {image,charge_per_dead,charge_per_live,checker_server,
+            separator} = req.body
         req.ip_info.operation = "CREATE"
-        const product = await Product.create({$push:{ip:req.ip_info},name:req.name,description:req.description,image,charge_per_dead,charge_per_live,ip:req.ip_info,added_by:req.id})
+        const product = await Product.create({
+            $push:{ip:req.ip_info},
+            name:req.name,
+            description:req.description,
+            image,charge_per_dead,charge_per_live,
+            ip:req.ip_info,added_by:req.id,
+        separator,checker_server})
         if (!product) return res.json({status:500,error:"Something went error while creating the product"})
         return res.json({status:200,data:product})
     }catch (e) {

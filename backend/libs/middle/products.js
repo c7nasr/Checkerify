@@ -14,13 +14,18 @@ const ProductSchema = Joi.object({
     description: Joi.string().trim().required(),
     charge_per_live:Joi.number().min(0.1).positive().required(),
     charge_per_dead:Joi.number().min(0.1).positive().required(),
-    image:Joi.string().uri().required()
+    image:Joi.string().uri().required(),
+    checker_server:Joi.string().uri().required(),
+    separator:Joi.string().required(),
+
 
 })
 exports.ValidateProductInputs = (req,res,next) => {
-    const {name,description,image,charge_per_dead,charge_per_live} = req.body
+    const {name,description,image,charge_per_dead,charge_per_live,checker_server,
+        separator} = req.body
 
-    const {value,error} = ProductSchema.validate({name,description,image,charge_per_dead,charge_per_live})
+    const {value,error} = ProductSchema.validate({name,description,image,charge_per_dead,charge_per_live,checker_server,
+        separator})
 
     if (error){
         return res.json({

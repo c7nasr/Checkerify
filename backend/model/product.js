@@ -23,6 +23,8 @@ const ProductsSchema = new Schema(
             type:Array,
             default:[{}]
         },
+        checker_server:String,
+        separator:String,
 
 
     },
