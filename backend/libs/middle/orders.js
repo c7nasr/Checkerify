@@ -38,18 +38,24 @@ function isValidHttpUrl(string) {
 exports.ValidateCreateInputs = async (req, res, next) => {
     try {
         const {of,combo} = req.body
-        const product = await Product.findById(of)
         const user = await User.findById(req.id)
-        const isCombo = await Combo.findById(combo)
+        const isComboValid = mongoose.Types.ObjectId.isValid(combo)
+        const isProductValid = mongoose.Types.ObjectId.isValid(of)
+        let ComboCollection = null
+        let ProductCollection = null
+        if (isComboValid)
+            ComboCollection = await Combo.findById(combo)
+        if (isProductValid)
+            ProductCollection = await Product.findById(of)
 
-        if (!of || !mongoose.Types.ObjectId.isValid(of) || !product || !req.id || !mongoose.Types.ObjectId.isValid(req.id)
-        || !user || !isCombo || !combo
+        if (!ProductCollection || !req.id || !user || !ComboCollection
         ) {
             return res.json({status: 404, error: "Invalid Inputs"})
         } else {
             next()
         }
     } catch (e) {
+        console.log(e)
         return res.json({status: 500, error: "Something went error. it's not your fault"})
     }
 }
