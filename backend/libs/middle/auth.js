@@ -57,13 +57,16 @@ exports.ValidateToken = async (req,res,next) => {
 exports.CheckRegister = async (req, res, next) => {
     const {username, email, password} = req.body
 
-    const {error} = RegisterSchema.validate({username, email, password});
+    const {value,error} = RegisterSchema.validate({username, email, password});
     if (error) {
         return res.json({status: 422, error: "Some inputs isn't valid"})
     } else {
-        const is_existed = await User.findOne({username})
+req.username = value.username
+        const is_existed = await User.findOne({username:value.username,email})
         if (!is_existed) return next()
-        return res.json({status: 422, error: "Username is already existed"})
+
+
+        return res.json({status: 422, error: "Username or email is already existed"})
 
     }
 
@@ -72,11 +75,12 @@ exports.CheckRegister = async (req, res, next) => {
 exports.CheckLogin = async (req, res, next) => {
     const {username, password} = req.body
 
-    const {error} = LoginSchema.validate({username, password});
+    const {value, error} = LoginSchema.validate({username, password});
     if (error) {
         return res.json({status: 422, error: "Some inputs isn't valid"})
     } else {
-        req.username = username
+        console.log(value)
+        req.username = value.username
        next()
 
     }

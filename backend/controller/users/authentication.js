@@ -19,12 +19,12 @@ exports.Register = async (req,res) => {
 }
 exports.Login = async (req,res) => {
     try {
-        const {username,password} = req.body
-        const isExisted = await User.findOne({username,password})
+        const {password} = req.body
+        const isExisted = await User.findOne({username:req.username,password})
 
         if (isExisted){
             const token = await GenerateToken(isExisted._id)
-            await User.findOneAndUpdate({username},{
+            await User.findOneAndUpdate({username:req.username},{
                 $push:{
                     logins: req.ip_info
                 }
