@@ -44,7 +44,8 @@ const userSchema = new Schema(
         register_info:{
             type:{},
             select:false
-        }
+        },
+        ban:[{}]
 
 
     },

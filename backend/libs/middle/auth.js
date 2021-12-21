@@ -40,6 +40,7 @@ exports.ValidateToken = async (req,res,next) => {
         if (is_valid){
             const getUser = await User.findOne({_id:is_valid.id})
             if (!getUser) return res.json({status: 401,error:"Invalid or Expired Token"})
+            if (!getUser.isActive) return res.json({status: 401,error:"Account Banned. Contact support for more info"})
             req.id = is_valid.id
             req.role = getUser.role
 
@@ -50,7 +51,7 @@ exports.ValidateToken = async (req,res,next) => {
         }
 
     }catch (e) {
-        return res.json({status: 401})
+        return res.json({status: 500, error:"Something went error while validating token"})
     }
 }
 
