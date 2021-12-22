@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Product = require("../../model/product");
 const User = require("../../model/user");
 const Combo = require("../../model/combo");
+const Order = require("../../model/orders");
 exports.ListUserOrdersFilters = (role) => {
     let select
     if (role === "admin") {
@@ -55,7 +56,19 @@ exports.ValidateCreateInputs = async (req, res, next) => {
             next()
         }
     } catch (e) {
-        console.log(e)
-        return res.json({status: 500, error: "Something went error. it's not your fault"})
+        return res.json({status: 500, error: "Error while validation."})
+    }
+}
+
+exports.ValidateOrderID = async (req,res,next) => {
+    try {
+        const {id} = req.params
+        const isOrderValid = mongoose.Types.ObjectId.isValid(id)
+        if (!id||!isOrderValid) return res.json({status: 404, error: "Not Found"})
+        next()
+
+    }catch (e) {
+        return res.json({status: 500, error: "Error while validation."})
+
     }
 }

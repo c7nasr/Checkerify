@@ -51,10 +51,10 @@ exports.getProductFilters = (role,id) => {
     let select
 
     if (role === "user"){
-        select = "-purchases -ip -__v -isActive"
+        select = "-purchases -ip -__v"
 
     }else if (role === "admin"){
-        select = "-__v"
+        select = "-__v +ip +purchases"
     }else{
         return ""
     }
