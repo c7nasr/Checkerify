@@ -33,7 +33,6 @@ exports.ValidateImage = async (req,res,next) => {
         const {file} = req
         const {originalname,mimetype,size,filename} = file
 
-        const ext = fileExtension(originalname);
         if (!file || mimetype !== "image/jpeg" && mimetype !== "image/png"){
             await fs.unlinkSync(file.path)
             return res.json({status:422,error:"Unprocessable file, Only JPEG and PNG is accepted"})
