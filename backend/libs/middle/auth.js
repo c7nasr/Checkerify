@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const RegisterSchema = Joi.object({
     username: Joi.string()
@@ -35,6 +36,11 @@ exports.GenerateToken = async (id) => {
 exports.ValidateToken = async (req,res,next) => {
     try {
         const token = req.headers["x-access-token"]
+        if (!token) return res.json({status: 401,error:"Invalid or Expired Token"})
+        const pattern = /(^[\w-]*\.[\w-]*\.[\w-]*$)/g;
+        if (!pattern.test(token)) {
+            return res.json({status: 401,error:"Invalid or Expired Token"})
+        }
 
         const is_valid = await jwt.verify(token, process.env.JWT_SECRET)
         if (is_valid){
@@ -47,11 +53,10 @@ exports.ValidateToken = async (req,res,next) => {
             next()
         }else{
             return res.json({status: 401,error:"Invalid or Expired Token"})
-
         }
 
     }catch (e) {
-        return res.json({status: 500, error:"Something went error while validating token"})
+        return res.json({status: 401,error:"Invalid or Expired Token"})
     }
 }
 
@@ -108,4 +113,13 @@ exports.isAdmin = async (req, res, next) => {
     } catch (e) {
         return res.sendStatus(500)
     }
+}
+
+exports.ValidateUserID = async(req,res,next) => {
+    const {id} = req.params
+    const isUserIDValid = mongoose.Types.ObjectId.isValid(id)
+
+    if (!isUserIDValid) return res.json({status:404,error:"User not found"})
+
+    next()
 }

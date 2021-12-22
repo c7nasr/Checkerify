@@ -45,7 +45,10 @@ const userSchema = new Schema(
             type:{},
             select:false
         },
-        ban:[{}]
+        ban:{
+            type:Array,
+            select:false
+        }
 
 
     },
