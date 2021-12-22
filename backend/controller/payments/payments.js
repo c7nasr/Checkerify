@@ -53,7 +53,7 @@ exports.NewPayment = async (req, res) => {
         return res.json({status:200,data: NewPayment})
 
     } catch (e) {
-        return res.sendStatus(500)
+        return res.json({status:500,error: "Something went error while creating payment!"})
     }
 }
 
@@ -72,7 +72,7 @@ exports.PaymentsHistory = async (req, res) => {
         return res.json({status:200,data:history})
 
     } catch (e) {
-        return res.sendStatus(500)
+        return res.json({status:500,error: "Something went error while fetching payments!"})
     }
 }
 
@@ -80,21 +80,24 @@ exports.GetPayment = async (req, res) => {
     try {
         Client.init(process.env.COINBASE);
 
-        const {id, code} = req
+        const {id} = req
+        const {code} = req.params
+        if (!code || code === "") return res.json({status:404,error: "not found"})
         const {timeline,confirmed_at,applied_threshold,payments} = await Charge.retrieve(code)
 
         let payment = await Payment.findOneAndUpdate({
-          user:id,  code
+          user:id, code
         },{
             status:timeline[timeline.length -1].status,
-            confirmed_at,applied_threshold,payments
-        })
+            confirmed_at,applied_threshold,payments,
+            timeline
+        },{new:true}) || null
 
         return res.json({status:200,data:payment})
 
     } catch (e) {
         console.log(e)
-        return res.sendStatus(500)
+        return res.json({status:500,error: "Something went error while fetching a payment!"})
     }
 }
 
@@ -108,8 +111,8 @@ exports.GetAllPayments = async (req, res) => {
         return res.json({status:200,data:payments})
 
     } catch (e) {
-        console.log(e)
-        return res.sendStatus(500)
+        return res.json({status:500,error: "Something went error while fetching payments!"})
+
     }
 }
 
@@ -134,8 +137,7 @@ exports.CancelPayment = async (req, res) => {
         }
 
     } catch (e) {
-        console.log(e)
-        return res.sendStatus(500)
+        return res.json({status:500,error: "Something went error while cancelling payment!"})
     }
 }
 

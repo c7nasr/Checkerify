@@ -17,11 +17,14 @@ const ProductsSchema = new Schema(
         },
         purchases:{
             type: Number,
-            default:0
+            default:0,
+            select:false,
+
         },
         ip:{
             type:Array,
-            default:[{}]
+            default:[{}],
+            select:false,
         },
         checker_server:String,
         separator:String,

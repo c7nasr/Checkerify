@@ -10,7 +10,7 @@ const router = express.Router();
 router.route("/new").post(LookIP,ValidateToken,ValidateCharge,NewPayment)
 router.route("/history").post(LookIP,ValidateToken,PaymentsHistory)
 router.route("/cancel/:id").post(LookIP,ValidateToken,ValidatePaymentID,CancelPayment)
-router.route("/:id").get(LookIP,ValidateToken,ValidatePaymentID,GetPayment)
+router.route("/:code").get(LookIP,ValidateToken,GetPayment)
 router.route("/").get(LookIP,ValidateToken,isAdmin,GetAllPayments)
 router.route("/hook").post(WebHook)
 
