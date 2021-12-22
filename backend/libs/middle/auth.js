@@ -59,7 +59,9 @@ exports.ValidateToken = async (req,res,next) => {
         return res.json({status: 401,error:"Invalid or Expired Token"})
     }
 }
-
+exports.MakeAvatarForUser = (username) => {
+    return `https://ui-avatars.com/api/?size=512&background=random&font-size=0.4&name=${username}`
+}
 exports.CheckRegister = async (req, res, next) => {
     const {username, email, password} = req.body
 

@@ -1,12 +1,13 @@
 const User = require("../../model/user");
-const {GenerateToken} = require("../../libs/middle/auth");
+const {GenerateToken, MakeAvatarForUser} = require("../../libs/middle/auth");
 const Order = require("../../model/orders");
 const Payment = require("../../model/charges");
 exports.Register = async (req,res) => {
   try {
        const {email,password} = req.body
         let register_info = req.ip_info
-      const NewUser = await User.create({username:req.username,email,password,register_info})
+      const avatar = MakeAvatarForUser(req.username)
+      const NewUser = await User.create({username:req.username,email,password,register_info,avatar})
 
       if (NewUser){
           const token = await GenerateToken(NewUser._id)

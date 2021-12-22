@@ -48,7 +48,8 @@ const userSchema = new Schema(
         ban:{
             type:Array,
             select:false
-        }
+        },
+        avatar:{type:String,default:""}
 
 
     },
