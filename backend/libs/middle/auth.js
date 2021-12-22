@@ -36,27 +36,25 @@ exports.GenerateToken = async (id) => {
 exports.ValidateToken = async (req,res,next) => {
     try {
         const token = req.headers["x-access-token"]
-        if (!token) return res.json({status: 401,error:"Invalid or Expired Token"})
+        if (!token) return res.json({status: 401,error:"You're not logged in"})
         const pattern = /(^[\w-]*\.[\w-]*\.[\w-]*$)/g;
-        if (!pattern.test(token)) {
-            return res.json({status: 401,error:"Invalid or Expired Token"})
-        }
+        if (!pattern.test(token))  return res.json({status: 401,error:"Invalid or Expired Token"})
 
         const is_valid = await jwt.verify(token, process.env.JWT_SECRET)
         if (is_valid){
             const getUser = await User.findOne({_id:is_valid.id})
-            if (!getUser) return res.json({status: 401,error:"Invalid or Expired Token"})
-            if (!getUser.isActive) return res.json({status: 401,error:"Account Banned. Contact support for more info"})
+            if (!getUser) return res.json({status: 404,error:"Invalid user id"})
+            if (!getUser.isActive) return res.json({status: 403,error:"Account Banned. Contact support for more info"})
             req.id = is_valid.id
             req.role = getUser.role
 
             next()
         }else{
-            return res.json({status: 401,error:"Invalid or Expired Token"})
+            return res.json({status: 403,error:"Invalid or Expired Token"})
         }
 
     }catch (e) {
-        return res.json({status: 401,error:"Invalid or Expired Token"})
+        return res.json({status: 403,error:"Invalid or Expired Token"})
     }
 }
 exports.MakeAvatarForUser = (username) => {
@@ -102,10 +100,10 @@ exports.isAdmin = async (req, res, next) => {
         const is_admin = await User.findOne({_id: id})
 
         if (!id || !is_admin){
-            return res.json({status:401,error:"You're not authorized"})
+            return res.json({status:401,error:"You're not logged in"})
         }else{
             if (is_admin.role !== "admin"){
-                return res.json({status:401,error:"You're not authorized"})
+                return res.json({status:403,error:"You're not authorized"})
 
             }else{
                 next()
