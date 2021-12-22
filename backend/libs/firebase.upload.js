@@ -7,14 +7,14 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-exports.UploadToCloud = async (file, filename) => {
+exports.UploadToCloud = async (file, filename, dest = "/combos/") => {
 
     try {
         const count = await GetCount(file.path)
         if (count === 0) return {link: "", count: 0}
         const storageRef = admin.storage().bucket(`gs://test-80d25.appspot.com`);
         const upload = await storageRef.upload(file.path, {
-            public: true, destination: `/combos/${filename}`, metadata: {
+            public: true, destination: `${dest}${filename}`, metadata: {
                 firebaseStorageDownloadTokens: randomUUID(),
             }
         });

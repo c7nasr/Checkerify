@@ -22,3 +22,24 @@ exports.UploadCombo = async (req, res) => {
         return res.sendStatus(500)
     }
 }
+
+exports.UploadImage = async (req, res) => {
+    try {
+        // Upload
+        const {
+            upload_name ,file
+        } = req
+
+        const {link,count} = await UploadToCloud(file,upload_name,"images/")
+
+        if (link === "" || count === "") return res.json({status:422,error:"File Empty"})
+        res.json({
+            status:200,data:link
+        })
+
+
+    } catch (e) {
+        console.log(e)
+        return res.sendStatus(500)
+    }
+}
